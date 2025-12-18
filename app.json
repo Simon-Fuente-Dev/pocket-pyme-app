@@ -2,6 +2,8 @@
   "expo": {
     "name": "pocket-pyme-app",
     "slug": "pocket-pyme-app",
+    "scheme": "pocket-pyme-app",
+    "entryPoint": "./node_modules/expo-router/entry",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
