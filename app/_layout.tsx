@@ -1,33 +1,31 @@
-import {TamaguiProvider, Theme, YStack} from "tamagui";
+// app/_layout.tsx
+import { TamaguiProvider, Theme, YStack, PortalProvider } from "tamagui";
+import { ToastProvider, ToastViewport } from '@tamagui/toast';
 import AppTamaguiConfig from "../tamagui.config";
-import { Stack } from 'expo-router'
-import {useColorScheme} from "react-native";
+import { Stack } from 'expo-router';
+import { useColorScheme } from "react-native";
+import { CurrentToast } from "../components/Rehusable/CurrentToast";
 
 export default function RootLayout() {
     const colorScheme = useColorScheme();
-    const currentTheme = AppTamaguiConfig.themes[colorScheme];
+    const themeName = colorScheme || 'light';
+
     return (
-        //Provider de tamagui para usar sus estilos
-        <TamaguiProvider config={AppTamaguiConfig} defaultTheme={colorScheme || 'light'}>
-            <Theme name={colorScheme || 'light'}>
-                <YStack f={1} backgroundColor={"$background"}>
-                    <Stack screenOptions={{
-                        headerShown: true,
-                        animation: 'slide_from_right',
-                        contentStyle: {
-                            backgroundColor: currentTheme.background.val,
-                        },
-                        // 3. También aplicamos el color al header para que combine
-                        headerStyle: {
-                            backgroundColor: AppTamaguiConfig.themes[colorScheme || 'light'].background.val,
-                        },
-                        headerTintColor: AppTamaguiConfig.themes[colorScheme || 'light'].color.val,
-                    }}/>
-                </YStack>
+        <TamaguiProvider config={AppTamaguiConfig} defaultTheme={themeName}>
+            {/* 1. El PortalProvider DEBE ser el padre del ToastProvider */}
+            <PortalProvider>
+                <ToastProvider swipeDirection="horizontal" duration={3000}>
+                    <Theme name={themeName}>
+                        <YStack f={1} backgroundColor={"$background"}>
+                            <Stack screenOptions={{ headerShown: false }} />
 
-            </Theme>
-
-
+                            {/* 2. El Viewport y el Toast deben estar dentro del PortalProvider y Theme */}
+                            <CurrentToast />
+                            <ToastViewport top={50} left={0} right={0} />
+                        </YStack>
+                    </Theme>
+                </ToastProvider>
+            </PortalProvider>
         </TamaguiProvider>
-    )
+    );
 }

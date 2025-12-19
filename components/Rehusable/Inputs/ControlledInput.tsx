@@ -25,6 +25,7 @@ export function ControlledInput({ control, name, label, rules, ...inputProps }: 
                 onBlur={field.onBlur}
                 borderColor={fieldState.error ? '$red10' : '$vcolor3'}
                 borderWidth={2}
+                backgroundColor={'$vcolor1'}
                 focusStyle={{ borderColor: '$vcolor4' }}
                 {...inputProps}
             />

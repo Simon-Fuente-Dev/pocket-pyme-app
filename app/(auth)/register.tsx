@@ -1,25 +1,19 @@
-import {Button, H2, Progress, Square, Tabs, Text, XStack, YStack} from "tamagui";
+import { KeyboardAvoidingView, ScrollView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {Button, H2, Progress, Square, Tabs, Text, XStack, YStack, Spinner} from "tamagui";
 import {router} from "expo-router";
 import {useForm} from "react-hook-form";
-import {ControlledInput} from "../../components/Rehusable/ControlledInput";
+import {ControlledInput} from "../../components/Rehusable/Inputs/ControlledInput";
 import {useState} from "react";
 import {Check, ChevronLeft, ChevronRight} from "@tamagui/lucide-icons";
-
-interface Register {
-    pnombre: string;
-    snombre: string;
-    appaterno: string;
-    apmaterno: string;
-    nomUsuario: string;
-    email: string;
-    password: string;
-    rPassword: string;
-}
-
+import type {Register} from "../../types/RegisterType";
+import {registarUsuario} from "../../api/Registro/useRegistrar";
+import { useToastController } from '@tamagui/toast'
 
 export default function RegisterScreen() {
     const [step, setStep] = useState(1);
     const totalSteps = 2;
+    const [loading, setLoading] = useState(false);
+    const toast = useToastController()
 
     const {control, handleSubmit, formState, trigger} = useForm<Register>({
         defaultValues: {
@@ -46,18 +40,35 @@ export default function RegisterScreen() {
 
     const prevStep = () => setStep(step - 1);
 
-    const onSubmit = (data: any) => {
-        console.log("Datos del formulario:", data)
+    const onSubmit = async (data: any) => {
+        try {
+            setLoading(true);
+            const response = await registarUsuario(data);
+            if (!response.success) {
+                toast.show('Error de Registro', {
+                    message: response.message,
+                    type: 'error' // Usamos esto para el color rojo que definimos antes
+                });
+            }
+        }catch (e) {
+            toast.show('Error de Conexión', {
+                message: 'No se pudo conectar con el servidor',
+                type: 'error'
+            });
+        }finally {
+            setLoading(false);
+
+        }
     }
 
     return (
-        <YStack f={1} p={"$4"} space={"$4"}>
+        <YStack f={1} marginBlock={"$8"} p={"$4"} space={"$4"}>
             <YStack space={"$2"}>
                 <XStack jc={"space-between"} ai={"center"}>
                     <Text color="$vcolor5" fontWeight="bold">Paso {step} de {totalSteps}</Text>
-                    <Text color="$vcolor3">{Math.round((step / totalSteps) * 100)}%</Text>
+                    <Text color="$vcolor5">{Math.round((step / totalSteps) * 100)}%</Text>
                 </XStack>
-                <Progress value={(step / totalSteps) * 100} size={"$2"} backgroundColor={"$vcolor2"}>
+                <Progress value={(step / totalSteps) * 100} size={"$2"} backgroundColor={"$vcolor1"}>
                     <Progress.Indicator animation={"bouncy"} backgroundColor={"$vcolor4"}/>
                 </Progress>
             </YStack>
@@ -105,12 +116,15 @@ export default function RegisterScreen() {
                     ) : (
                         <Button
                             flex={2}
-                            backgroundColor="$vcolor5"
-                            color="white"
-                            iconAfter={Check}
+                            backgroundColor={loading ? "$vcolor2" : "$vcolor4"}
+                            color={loading ? "$vcolor4" : "white"}
+                            icon={loading ? <Spinner color="$vcolor4" /> : null}
+                            iconAfter={loading ? null : Check}
                             onPress={handleSubmit(onSubmit)}
+                            disabled={loading}
+                            opacity={loading ? 0.8 : 1}
                         >
-                            Registrarse
+                            {loading ? "Cargando..." : "Registrarse"}
                         </Button>
                     )}
                 </XStack>

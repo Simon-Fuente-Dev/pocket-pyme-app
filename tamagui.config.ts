@@ -2,11 +2,12 @@ import { createTamagui, createTokens } from 'tamagui'
 import { config } from '@tamagui/config/v3'
 
 const customColors = {
-    vcolor1: '#F7EBD3',
-    vcolor2: '#FFDBAF',
-    vcolor3: '#CA7B42',
-    vcolor4: '#823919',
-    vcolor5: '#521908',
+    vcolor1: '#BDD8E9',
+    vcolor2: '#7BBDE8',
+    vcolor3: '#6EA2B3',
+    vcolor4: '#4E8EA2',
+    vcolor5: '#001D39',
+    bgColorL: '#F0F3FA',
     red10: '#F44336',
     white: '#FFFFFF',
     black: '#000000',
@@ -48,7 +49,7 @@ const appConfig = createTamagui({
     tokens,
     themes: {
         light: {
-            background: tokens.color.vcolor1,
+            background: tokens.color.bgColorL,
             color: tokens.color.vcolor5,
             primary: tokens.color.vcolor3,
             secondary: tokens.color.vcolor2,
