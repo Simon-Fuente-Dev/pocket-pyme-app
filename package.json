@@ -34,5 +34,9 @@
     "babel-preset-expo": "^54.0.9",
     "typescript": "~5.9.2"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "@tamagui/portal": "1.141.4",
+    "@tamagui/core": "1.141.4"
+  }
 }
