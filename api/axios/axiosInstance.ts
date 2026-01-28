@@ -2,10 +2,8 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
 // REEMPLAZA ESTA IP por la que obtuviste en el paso anterior
-const IP_COMPUTADORA = '172.26.89.232'; // pc de la pega
-
 const axiosInstance = axios.create({
-    baseURL: `http://${IP_COMPUTADORA}:8080/movil-api`,
+    baseURL: process.env.EXPO_PUBLIC_API_URL,
     headers: {
         'Content-Type': 'application/json'
     },

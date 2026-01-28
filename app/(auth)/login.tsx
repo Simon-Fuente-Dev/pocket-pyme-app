@@ -1,16 +1,18 @@
-import {Button, Text, XStack, YStack} from "tamagui";
+import { Button, Text, XStack, YStack } from "tamagui";
 import { useToastController } from '@tamagui/toast'
-import {router} from "expo-router";
-import type {LoginType} from "../../types/LoginType";
-import {useForm} from "react-hook-form";
-import {ControlledInput} from "../../components/Rehusable/Inputs/ControlledInput";
-import {authUsuario} from "../../api/Login/useLogin";
+import { router } from "expo-router";
+import type { LoginType } from "../../types/LoginType";
+import { useForm } from "react-hook-form";
+import { ControlledInput } from "../../components/Rehusable/Inputs/ControlledInput";
+import { authUsuario } from "../../api/Login/useLogin";
+import * as SecureStore from 'expo-secure-store';
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginScreen() {
-
+    const { signIn } = useAuth();
     const toast = useToastController()
 
-    const {control, handleSubmit} = useForm<LoginType>({
+    const { control, handleSubmit } = useForm<LoginType>({
         defaultValues: {
             username: '',
             password: ''
@@ -21,7 +23,18 @@ export default function LoginScreen() {
         try {
             const response = await authUsuario(data);
             console.log(response)
-        }catch (e) {
+            console.log(response.data)
+            if (response.success) {
+                const { token, id_usuario } = response.data;
+                await signIn(token, id_usuario)
+            } else {
+                toast.show(response.message, {
+                    native: true,
+                    message: 'No se pudo conectar con el servidor',
+                    type: 'error'
+                });
+            }
+        } catch (e) {
             toast.show('Error de Conexión', {
                 native: true,
                 message: 'No se pudo conectar con el servidor',
