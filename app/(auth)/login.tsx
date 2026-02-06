@@ -5,7 +5,6 @@ import type { LoginType } from "../../types/LoginType";
 import { useForm } from "react-hook-form";
 import { ControlledInput } from "../../components/Rehusable/Inputs/ControlledInput";
 import { authUsuario } from "../../api/Login/useLogin";
-import * as SecureStore from 'expo-secure-store';
 import { useAuth } from "../../context/AuthContext";
 
 export default function LoginScreen() {
@@ -22,8 +21,6 @@ export default function LoginScreen() {
     const onSubmit = async (data): LoginType => {
         try {
             const response = await authUsuario(data);
-            console.log(response)
-            console.log(response.data)
             if (response.success) {
                 const { token, id_usuario } = response.data;
                 await signIn(token, id_usuario)

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter, useSegments, Stack } from "expo-router";
 import { useColorScheme } from "react-native";
-import { TamaguiProvider, Theme } from "tamagui";
+import { TamaguiProvider, Theme, PortalProvider } from "tamagui";
 import { ToastProvider } from '@tamagui/toast';
 import AppTamaguiConfig from "../tamagui.config";
 
@@ -45,13 +45,15 @@ export default function RootLayout() {
 
     return (
         <TamaguiProvider config={AppTamaguiConfig} defaultTheme={themeName}>
-            <ToastProvider swipeDirection="horizontal" duration={3000}>
-                <AuthProvider>
-                    <Theme name={themeName}>
-                        <RootLayoutNav />
-                    </Theme>
-                </AuthProvider>
-            </ToastProvider>
+            <PortalProvider shouldAddRootHost>
+                <ToastProvider swipeDirection="horizontal" duration={3000}>
+                    <AuthProvider>
+                        <Theme name={themeName}>
+                            <RootLayoutNav />
+                        </Theme>
+                    </AuthProvider>
+                </ToastProvider>
+            </PortalProvider>
         </TamaguiProvider>
     );
 }
